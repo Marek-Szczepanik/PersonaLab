@@ -12,8 +12,12 @@ export interface AnonymousToggleProps {
   onChange: (checked: boolean) => void
 }
 
-/** Rozepsaná otázka připravená pro pozdější generování. */
+/** Otázka a obsluha spuštění porovnání. */
 export interface QuestionFormProps {
   question: string
   onChange: (question: string) => void
+  onSubmit: () => void
+  onStop: () => void
+  busy: boolean
+  canSubmit: boolean
 }

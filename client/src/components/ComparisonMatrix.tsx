@@ -2,7 +2,7 @@ import AnswerCard from './AnswerCard'
 import type { ComparisonMatrixProps } from '../types/ComparisonTypes'
 
 /** Vykreslí libovolný počet řádků person a sloupců modelů. */
-export default function ComparisonMatrix({ personas, models, anonymous }: ComparisonMatrixProps) {
+export default function ComparisonMatrix({ personas, models, anonymous, results, onSkip }: ComparisonMatrixProps) {
   if (personas.length === 0 || models.length === 0) {
     return (
       <div className="matrix-empty">
@@ -14,7 +14,7 @@ export default function ComparisonMatrix({ personas, models, anonymous }: Compar
   return (
     <div className="matrix-scroll" tabIndex={0} role="region" aria-label="Matice porovnání, lze posouvat vodorovně">
       <table className="comparison-table">
-        <caption className="sr-only">Řádky představují persony, sloupce modely. Generování zatím není dostupné.</caption>
+        <caption className="sr-only">Řádky představují persony, sloupce modely. Každá buňka zobrazuje vlastní stav a odpověď.</caption>
         <thead>
           <tr>
             <th scope="col" className="matrix-corner">PERSONA / MODEL</th>
@@ -32,7 +32,11 @@ export default function ComparisonMatrix({ personas, models, anonymous }: Compar
                 <strong>{anonymous ? `Persona ${index + 1}` : persona.name}</strong>
                 <small>{anonymous ? 'Identita je skrytá' : persona.description}</small>
               </th>
-              {models.map(model => <td key={model}><AnswerCard /></td>)}
+              {models.map(model => (
+                <td key={model}>
+                  <AnswerCard result={results[persona.id]?.[model]} onSkip={() => onSkip(persona.id, model)} />
+                </td>
+              ))}
             </tr>
           ))}
         </tbody>

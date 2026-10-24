@@ -2,9 +2,11 @@ import ollama
 from fastapi import FastAPI, HTTPException
 from httpx import ConnectError
 from api.personas import router as personas_router
+from api.comparison import router as comparison_router
 
 app = FastAPI(title="PersonaLab API")
 app.include_router(personas_router)
+app.include_router(comparison_router)
 
 
 @app.get("/api/health")

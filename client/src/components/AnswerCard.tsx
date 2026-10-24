@@ -1,19 +1,29 @@
-import type { AnswerCardProps } from '../types/ComparisonTypes'
+import type { AnswerCardProps, ComparisonStatus } from '../types/ComparisonTypes'
 
-/** Zobrazuje prázdný stav; je připravena na budoucí odpověď a hodnocení. */
-export default function AnswerCard({ answer }: AnswerCardProps) {
+/** České popisky průběžného stavu jedné buňky. */
+const statusLabels: Record<ComparisonStatus, string> = {
+  waiting: 'Čeká',
+  generating: 'Generuje',
+  done: 'Hotovo',
+  error: 'Chyba',
+  skipped: 'Přeskočeno',
+  cancelled: 'Zastaveno',
+}
+
+/** Zobrazuje stav konkrétní kombinace a její odpověď nebo chybu. */
+export default function AnswerCard({ result, onSkip }: AnswerCardProps) {
   return (
-    <article className={`answer-card${answer ? ' has-answer' : ''}`} aria-label="Odpověď modelu">
-      {answer ? (
-        <p className="answer-text">{answer.text}</p>
-      ) : (
-        <span>Bez odpovědi</span>
-      )}
-      {answer && <div className="rating-preview" aria-label={answer.rating ? `Hodnocení ${answer.rating} z 5` : 'Bez hodnocení'}>
-        <span aria-hidden="true">
-          {[1, 2, 3, 4, 5].map(value => <span className={answer?.rating && value <= answer.rating ? 'star-filled' : ''} key={value}>☆</span>)}
-        </span>
-      </div>}
+    <article className={`answer-card${result ? ' has-result' : ''}`} aria-label="Odpověď modelu" aria-busy={result?.status === 'generating'}>
+      {result ? (
+        <>
+          <div className="answer-header">
+            <span className={`answer-status status-${result.status}`} role="status">{statusLabels[result.status]}</span>
+            {result.status === 'generating' && <button type="button" className="text-button" onClick={onSkip}>Přeskočit</button>}
+          </div>
+          {result.text && <p className="answer-text">{result.text}</p>}
+          {result.status === 'error' && <p className="answer-error" role="alert">{result.error}</p>}
+        </>
+      ) : <span>Bez odpovědi</span>}
     </article>
   )
 }
