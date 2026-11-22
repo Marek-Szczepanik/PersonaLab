@@ -11,31 +11,14 @@ import ollama
 from anyio import CancelScope
 from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import StreamingResponse
-from pydantic import BaseModel, ConfigDict, Field, field_validator
 
-from api.personas import Persona, get_personas
+from api.repositories.persona_repository import load_personas
+from api.schemas.comparison_request import ComparisonRequest
+from api.schemas.persona import Persona
 
 router = APIRouter(prefix="/api", tags=["comparison"])
 logger = logging.getLogger(__name__)
 OperationResult = TypeVar("OperationResult")
-
-
-class ComparisonRequest(BaseModel):
-    """Otázka a neprázdné výběry pro jedno porovnání."""
-
-    model_config = ConfigDict(str_strip_whitespace=True, extra="forbid")
-    question: str = Field(min_length=1, max_length=20000)
-    persona_ids: list[str] = Field(min_length=1)
-    models: list[str] = Field(min_length=1)
-
-    @field_validator("persona_ids", "models")
-    @classmethod
-    def validate_selection(cls, values: list[str]) -> list[str]:
-        """Odmítne prázdné názvy a opakované položky výběru."""
-        values = [value.strip() for value in values]
-        if any(not value for value in values) or len(set(values)) != len(values):
-            raise ValueError("Výběr nesmí obsahovat prázdné ani duplicitní položky.")
-        return values
 
 
 def encode_event(persona_id: str, model: str, status: str, **details: str) -> str:
@@ -145,7 +128,10 @@ async def generate_comparison(data: ComparisonRequest, personas: dict[str, Perso
 @router.post("/compare")
 async def compare(data: ComparisonRequest, request: Request) -> StreamingResponse:
     """Ověří persony a vrací průběžné stavy i odpovědi proudem NDJSON."""
-    personas = {persona.id: persona for persona in get_personas()}
+    try:
+        personas = {persona.id: persona for persona in load_personas()}
+    except OSError as error:
+        raise HTTPException(500, "Konfigurace person se nepodařilo načíst.") from error
     if any(persona_id not in personas for persona_id in data.persona_ids):
         raise HTTPException(422, "Některá vybraná persona už není dostupná. Obnovte seznam person.")
     return StreamingResponse(

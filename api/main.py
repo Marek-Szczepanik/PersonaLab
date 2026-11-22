@@ -1,28 +1,14 @@
-import ollama
-from fastapi import FastAPI, HTTPException
-from httpx import ConnectError
-from api.personas import router as personas_router
-from api.comparison import router as comparison_router
+"""Vstupní bod backendu: vytvoří aplikaci a zaregistruje routery."""
+
+from fastapi import FastAPI
+
+from api.routers.comparison_router import router as comparison_router
+from api.routers.health_router import router as health_router
+from api.routers.models_router import router as models_router
+from api.routers.personas_router import router as personas_router
 
 app = FastAPI(title="PersonaLab API")
+app.include_router(health_router)
+app.include_router(models_router)
 app.include_router(personas_router)
 app.include_router(comparison_router)
-
-
-@app.get("/api/health")
-def health():
-    """Ověří dostupnost API."""
-    return {"status": "ok"}
-
-
-@app.get("/api/models")
-def get_models():
-    """Vrátí seznam lokálně dostupných modelů Ollamy."""
-    try:
-        response = ollama.list()
-        return {"models": [model.model for model in response.models]}
-    except (ConnectionError, ConnectError):
-        raise HTTPException(
-            status_code=503,
-            detail="Ollama není dostupná."
-        )
