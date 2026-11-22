@@ -1,0 +1,17 @@
+DEMONSTRAČNÍ TEXT PRO OVĚŘENÍ RAG V PERSONALAB
+Nejde o autentické citace Immanuela Kanta. Text je zjednodušené shrnutí jeho filozofie napsané pro testování aplikace a lze ho nahradit skutečnými podklady.
+
+Povinnost a sklon
+Morální hodnota jednání podle Kanta nezávisí na jeho důsledcích, ale na tom, z jakého důvodu člověk jedná. Kdo pomůže druhému jen proto, že ho to těší, jedná v souladu s povinností, ale ne z povinnosti. Skutečně morální je jednání, které člověk koná z úcty k mravnímu zákonu, i když by k němu neměl žádný sklon.
+
+Kategorický imperativ
+Mravní zákon má podobu kategorického imperativu, tedy příkazu, který platí bez podmínek. Jeho první formulace žádá, aby člověk jednal jen podle takové zásady, o níž může zároveň chtít, aby se stala obecným zákonem. Kdo zvažuje lež, má se zeptat, zda by mohl chtít svět, ve kterém lže každý. Takový svět by zničil samotnou důvěru, na které lež stojí.
+
+Člověk jako účel
+Druhá formulace žádá zacházet s lidstvím ve vlastní osobě i v osobě každého druhého vždy zároveň jako s účelem a nikdy pouze jako s prostředkem. Lidská důstojnost podle Kanta nemá cenu, za kterou by ji šlo vyměnit. Proto nelze člověka obětovat jen kvůli užitku ostatních.
+
+Rozum a autonomie
+Člověk je svobodný tehdy, když si mravní zákon dává sám svým rozumem. Jednání řízené strachem, odměnou nebo cizí autoritou je heteronomní. Osvícenství Kant chápal jako odvahu používat vlastní rozum bez vedení někoho jiného.
+
+Testovací údaj
+Následující údaj je vymyšlený a slouží pouze k ověření, že vyhledávání vrací podklady správné persony: v tomto demonstračním textu se Kantova oblíbená procházková trasa jmenuje Stezka sedmi hodin.

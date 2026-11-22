@@ -40,6 +40,10 @@ cd ..
 
 # stažení alespoň jednoho modelu do Ollamy
 ollama pull qwen3.5:9b
+
+# stažení embedding modelu a vytvoření indexu podkladů
+ollama pull bge-m3
+python -m api.rag
 ```
 
 Pokud PowerShell odmítne spustit **Activate.ps1** kvůli zásadám spouštění skriptů, povolte skripty jen pro aktuální terminál a aktivaci zopakujte:
@@ -103,11 +107,42 @@ Ollama, backend a frontend se spouštějí v tomto pořadí, každý ve vlastní
   ```
 - Po stažení obnovte stránku a model vyberte přes **+** u modelů. Stahování modelů přímo v aplikaci není implementované.
 
+## Podklady osobností
+
+- Podklady se ukládají jako textové soubory **.txt** v kódování UTF-8 do složky pojmenované podle `id` osobnosti:
+  ```text
+  documents/
+  ├── kant/
+  │   └── demo.txt
+  └── dalajlama/
+      └── demo.txt
+  ```
+- Soubory **demo.txt** jsou demonstrační texty pro ověření funkčnosti, nejde o autentické citace. Lze je libovolně nahradit nebo doplnit dalšími soubory bez úprav kódu.
+- Po každém přidání, změně nebo odstranění dokumentu spusťte indexaci znovu:
+  ```bash
+  # spouštějte z kořene projektu s aktivovaným virtuálním prostředím
+  python -m api.rag
+  ```
+- Indexace rozdělí dokumenty na úryvky, vytvoří jejich embeddings v Ollamě a uloží je do **rag_index/index.json**. Index se pokaždé sestaví celý znovu, takže neobsahuje duplicity ani smazané dokumenty. Složka **rag_index/** se do Gitu neukládá a lze ji kdykoli smazat a indexací vytvořit znovu.
+- Výchozí embedding model je **bge-m3**. Jiný model nastavíte proměnnou prostředí před indexací:
+  ```bash
+  # Windows (PowerShell):
+  $env:PERSONALAB_EMBED_MODEL = "jiny-model"
+  # Linux/macOS:
+  export PERSONALAB_EMBED_MODEL=jiny-model
+
+  ollama pull jiny-model
+  python -m api.rag
+  ```
+- Název použitého modelu se ukládá do indexu, aby vyhledávání vždy používalo stejný model jako indexace.
+
 ## Struktura projektu
 
-- **api/** – backend FastAPI, správa osobností a komunikace s Ollamou
+- **api/** – backend FastAPI: **routers/** endpointy, **schemas/** datové třídy, **repositories/** práce se soubory person, **rag/** indexace podkladů
 - **client/** – webové rozhraní v Reactu
+- **documents/** – textové podklady osobností
 - **personas/** – JSON konfigurace osobností
+- **rag_index/** – vygenerovaný index podkladů, vzniká po indexaci
 - **requirements.txt** – Python závislosti
 
 ## Použité technologie
@@ -120,4 +155,5 @@ Ollama, backend a frontend se spouštějí v tomto pořadí, každý ve vlastní
 - FastAPI 0.162 + Uvicorn 0.54 – backend a streamování odpovědí
 - Pydantic 2.14 – validace požadavků a konfigurací osobností
 - Ollama 0.6 – lokální běh a volání jazykových modelů
-- LangChain Core 1.7 + LangChain Ollama 1.1 – základ pro práci s dokumenty a embeddings
+- LangChain Core 1.7 + LangChain Ollama 1.1 + LangChain Text Splitters 1.1 – dělení dokumentů, embeddings a vektorové úložiště
+- NumPy 2.5 – výpočet podobnosti embeddings
