@@ -13,36 +13,72 @@ Jedná se o týmový školní projekt. Osobnosti jsou uložené v JSON souborech
 - Nabídnout anonymní režim, který skryje jména osobností a omezí tak předpojatost při čtení odpovědí.
 - Podložit odpovědi osobností vlastními dokumenty pomocí RAG (připravuje se).
 
+## Instalace
+
+Je potřeba mít nainstalovaný Git, Python 3.14, Node.js 24 a [Ollamu](https://ollama.com/download). Pro Python závislosti doporučuji použít virtuální prostředí **.venv**, aby byly oddělené od ostatních projektů a systémové instalace Pythonu. Instalace se provádí jen jednou.
+
+```bash
+# naklonování repozitáře
+git clone https://github.com/Marek-Szczepanik/PersonaLab.git
+cd PersonaLab
+
+# vytvoření a aktivace virtuálního prostředí
+# Windows (PowerShell):
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+# Linux/macOS:
+python3 -m venv .venv
+source .venv/bin/activate
+
+# instalace Python závislostí
+python -m pip install -r requirements.txt
+
+# instalace frontendových závislostí
+cd client
+npm ci
+cd ..
+
+# stažení alespoň jednoho modelu do Ollamy
+ollama pull qwen3.5:9b
+```
+
+Pokud PowerShell odmítne spustit **Activate.ps1** kvůli zásadám spouštění skriptů, povolte skripty jen pro aktuální terminál a aktivaci zopakujte:
+
+```bash
+# Windows (PowerShell):
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned
+.\.venv\Scripts\Activate.ps1
+```
+
 ## Použití projektu
 
-Všechny příkazy se spouštějí z kořene repozitáře s aktivovaným virtuálním prostředím (viz **Instalace**). Backend a frontend běží ve dvou oddělených terminálech, které nechte během používání otevřené.
+Ollama, backend a frontend se spouštějí v tomto pořadí, každý ve vlastním terminálu otevřeném v kořeni repozitáře.
 
-- Nejdřív spusťte Ollamu a stáhněte alespoň jeden model:
+- Spusťte Ollamu:
   ```bash
-  # Ollama běží na http://localhost:11434, ve Windows obvykle na pozadí
-  # pokud neběží, spusťte ji v samostatném terminálu:
+  # ve Windows obvykle běží na pozadí, pak tento krok přeskočte
   ollama serve
-  ollama pull qwen3.5:9b
   ```
-- V prvním terminálu spusťte backend:
+- Spusťte backend:
   ```bash
-  # spouštějte z kořene projektu, ne ze složky api/
+  # Windows (PowerShell):
+  .\.venv\Scripts\Activate.ps1
+  # Linux/macOS:
+  source .venv/bin/activate
+
   python -m uvicorn api.main:app --reload
   ```
-- Ve druhém terminálu spusťte frontend:
+- Spusťte frontend:
   ```bash
-  # Python prostředí zde aktivovat není potřeba
   cd client
   npm run dev
   ```
-- Otevřete [localhost:5173](http://localhost:5173), případně adresu vypsanou Vite. Frontend přesměrovává požadavky **/api** na backend na portu 8000.
+- Otevřete [localhost:5173](http://localhost:5173).
 - Pomocí **+** vyberte osobnosti a modely, štítky odeberete tlačítkem **×**. Napište otázku a klikněte na **Odeslat**.
 - Každá buňka matice zobrazuje stav **Čeká**, **Generuje**, **Hotovo**, **Chyba**, **Přeskočeno** nebo **Zastaveno**. Text odpovědi se vypisuje průběžně.
-- Kombinace se zpracovávají postupně. **Přeskočit** přeruší aktuální buňku a pokračuje další, **Zastavit** ukončí celé porovnání. Už získaný text zůstane zobrazený.
-- **Anonymní režim** skryje jména a popisy osobností v matici, výběrové štítky zůstávají viditelné.
-- Aplikaci ukončíte pomocí `Ctrl+C` v obou terminálech a virtuální prostředí příkazem `deactivate`.
-
-Pokud aplikace hlásí nedostupnou Ollamu, ověřte, že běží a má stažený model. Rychlost a kvalita odpovědí závisí na vybraném modelu a hardwaru.
+- **Přeskočit** přeruší aktuální buňku a pokračuje další, **Zastavit** ukončí celé porovnání. Už získaný text zůstane zobrazený.
+- **Anonymní režim** skryje jména a popisy osobností v matici.
+- Aplikaci ukončíte pomocí `Ctrl+C` v terminálech backendu a frontendu.
 
 ## Přidání osobnosti
 
@@ -85,39 +121,3 @@ Pokud aplikace hlásí nedostupnou Ollamu, ověřte, že běží a má stažený
 - Pydantic 2.14 – validace požadavků a konfigurací osobností
 - Ollama 0.6 – lokální běh a volání jazykových modelů
 - LangChain Core 1.7 + LangChain Ollama 1.1 – základ pro práci s dokumenty a embeddings
-
-## Instalace
-
-Je potřeba mít nainstalovaný Git, Python 3.14, Node.js 24 a [Ollamu](https://ollama.com/download). Pro Python závislosti doporučuji použít virtuální prostředí **.venv**, aby byly oddělené od ostatních projektů a systémové instalace Pythonu.
-
-```bash
-# naklonování repozitáře
-git clone https://github.com/Marek-Szczepanik/PersonaLab.git
-cd PersonaLab
-
-# vytvoření a aktivace virtuálního prostředí
-# Windows (PowerShell):
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-# Linux/macOS:
-python3 -m venv .venv
-source .venv/bin/activate
-
-# instalace Python závislostí
-python -m pip install -r requirements.txt
-
-# instalace frontendových závislostí do client/node_modules
-cd client
-npm ci
-cd ..
-```
-
-Prostředí se vytváří jen při první instalaci, při dalších spuštěních stačí aktivovat existující **.venv**. Aktivace platí pouze pro aktuální terminál, po aktivaci se na začátku řádku obvykle zobrazí `(.venv)`. Složka **.venv** se do Gitu neukládá.
-
-Pokud PowerShell odmítne spustit **Activate.ps1** kvůli zásadám spouštění skriptů, povolte skripty jen pro aktuální terminál a aktivaci zopakujte:
-
-```bash
-# Windows (PowerShell):
-Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned
-.\.venv\Scripts\Activate.ps1
-```
