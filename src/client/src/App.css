@@ -1,10 +1,12 @@
-.app-shell { max-width: 1480px; margin: auto; padding: 0 32px 32px; }
-.site-header { min-height: 96px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); gap: 20px; }
+/* Aplikace vyplní celé okno; posouvá se jen matice uvnitř. */
+.app-shell { height: 100svh; display: flex; flex-direction: column; padding: 0 32px 24px; }
+.site-header { flex-shrink: 0; min-height: 96px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); gap: 20px; }
 .api-status { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); }
 .api-status > span { width: 6px; height: 6px; border-radius: 50%; background: #b4a3bf; }
 .api-status.connected > span { background: #70aa8a; box-shadow: 0 0 0 4px #edf5ef; }
-.workspace { display: grid; margin-top: 24px; }
-.comparison-panel { min-width: 0; background: #fff; border: 1px solid var(--border); border-radius: 16px; box-shadow: 0 5px 24px #39225504; }
+.workspace { display: flex; flex: 1; min-height: 0; margin-top: 24px; }
+.comparison-panel { flex: 1; min-width: 0; min-height: 0; display: flex; flex-direction: column; background: #fff; border: 1px solid var(--border); border-radius: 16px; box-shadow: 0 5px 24px #39225504; }
+.comparison-panel > * { flex-shrink: 0; }
 .selectors { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; padding: 24px 28px; margin: 0; min-width: 0; border: 0; border-bottom: 1px solid var(--border); }
 .selector { min-width: 0; }
 .field-heading { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; font-size: 12px; font-weight: 700; }
@@ -42,7 +44,8 @@
 .anonymous-toggle input:checked + .switch-track { background: var(--accent); }
 .anonymous-toggle input:checked + .switch-track::after { transform: translateX(12px); }
 .anonymous-toggle input:focus-visible + .switch-track { outline: 3px solid #b79af0; outline-offset: 3px; }
-.matrix-scroll { overflow-x: auto; margin: 0 28px; padding-bottom: 10px; scrollbar-width: thin; scrollbar-color: #d8cce9 #faf8fe; }
+/* Matice zabere zbylé místo; karty ho vyplní podle počtu řádků (--rows) a rostou až při delším textu. */
+.matrix-scroll { flex: 1 1 0; min-height: 0; overflow: auto; container-type: size; margin: 0 18px; padding: 0 10px 10px; scrollbar-width: thin; scrollbar-color: #d8cce9 #faf8fe; }
 .comparison-table { border-collapse: separate; border-spacing: 10px 0; margin: 0 -10px; width: calc(100% + 20px); table-layout: fixed; }
 .comparison-table th { font-weight: 500; text-align: left; overflow-wrap: anywhere; }
 .comparison-table thead th { padding: 0 4px 13px; color: #62566e; font-size: 11px; min-width: 220px; width: 220px; }
@@ -51,7 +54,7 @@
 .comparison-table tbody th strong { display: block; font-size: 12px; line-height: 1.45; }
 .comparison-table tbody th small { display: block; margin-top: 5px; color: #82718f; font-size: 10px; line-height: 1.5; }
 .comparison-table td { vertical-align: top; padding: 0 0 13px; }
-.answer-card { min-height: 150px; height: 100%; border: 1px solid #eae5f0; background: #fcfbfd; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 17px 12px 10px; }
+.answer-card { min-height: max(150px, calc((100cqh - 34px) / var(--rows, 1) - 13px)); border: 1px solid #eae5f0; background: #fcfbfd; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 17px 12px 10px; }
 .answer-card p { color: #8a7c96; font-size: 10px; line-height: 1.7; margin-top: 5px; }
 .answer-card.has-result { align-items: stretch; justify-content: flex-start; text-align: left; }
 .answer-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
@@ -64,6 +67,7 @@
 .answer-card .answer-error { color: #a34757; font-size: 12px; overflow-wrap: anywhere; }
 .answer-card .answer-sources { color: #7c6a91; font-size: 11px; margin-top: 4px; overflow-wrap: anywhere; }
 .answer-card .answer-warning { color: #9a6a1c; font-size: 11px; margin-top: 2px; overflow-wrap: anywhere; }
+.comparison-panel > .matrix-empty { flex: 1 1 0; }
 .matrix-empty { min-height: 180px; margin: 0 28px 16px; border: 1px dashed #e1d8eb; background: #fcfaff; border-radius: 11px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 24px; }
 .matrix-empty p { color: #867392; font-size: 12px; line-height: 1.8; margin-top: 9px; }
 .question-form { padding: 23px 28px 21px; border-top: 1px solid var(--border); margin-top: 6px; }
@@ -90,14 +94,18 @@
 
 .brand { font-size: 24px; font-weight: 650; letter-spacing: -.6px; }
 @media (max-width: 600px) {
-  .app-shell { padding: 0 16px 20px; }
+  /* Na mobilu se stránka posouvá celá a karty rostou s textem. */
+  .app-shell { height: auto; min-height: 100svh; padding: 0 16px 20px; }
+  .matrix-scroll { flex: none; container-type: normal; }
+  .answer-card { min-height: 150px; }
   .site-header { min-height: 72px; }
   .brand { font-size: 22px; }
   .api-status { font-size: 11px; }
   .workspace { margin-top: 16px; }
   .selectors { grid-template-columns: 1fr; gap: 18px; padding: 20px 16px; }
   .matrix-toolbar { padding: 14px 16px; flex-wrap: wrap; }
-  .matrix-scroll, .matrix-empty { margin-left: 16px; margin-right: 16px; }
+  .matrix-scroll { margin-left: 6px; margin-right: 6px; }
+  .matrix-empty { margin-left: 16px; margin-right: 16px; }
   .comparison-table thead .matrix-corner { width: 110px; min-width: 110px; }
   .comparison-table tbody th { width: 110px; }
   .comparison-table thead th { width: 205px; min-width: 205px; }

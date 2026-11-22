@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react'
 import AnswerCard from './AnswerCard'
 import type { ComparisonMatrixProps } from '../types/ComparisonTypes'
 
@@ -12,7 +13,7 @@ export default function ComparisonMatrix({ personas, models, anonymous, results,
   }
 
   return (
-    <div className="matrix-scroll" tabIndex={0} role="region" aria-label="Matice porovnání, lze posouvat vodorovně">
+    <div className="matrix-scroll" style={{ '--rows': personas.length } as CSSProperties} tabIndex={0} role="region" aria-label="Matice porovnání, lze posouvat">
       <table className="comparison-table">
         <caption className="sr-only">Řádky představují persony, sloupce modely. Každá buňka zobrazuje vlastní stav a odpověď.</caption>
         <thead>
