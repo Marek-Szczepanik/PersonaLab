@@ -1,90 +1,123 @@
 # PersonaLab
 
-Školní aplikace pro porovnávání odpovědí AI osobností napříč modely z Ollamy. Řádky matice představují osobnosti, sloupce modely.
+Webová aplikace pro porovnávání odpovědí AI osobností napříč jazykovými modely spuštěnými lokálně přes **Ollamu**. Uživatel položí jednu otázku a aplikace ji předá každé kombinaci vybrané osobnosti a modelu. Odpovědi se zobrazují průběžně v matici, kde řádky představují osobnosti a sloupce modely.
 
-Frontend používá React, TypeScript a Vite, backend FastAPI. Osobnosti jsou uložené v JSON souborech, databáze není potřeba.
+Jedná se o týmový školní projekt. Osobnosti jsou uložené v JSON souborech, aplikace nepotřebuje databázi ani cloudovou službu.
 
-## Co potřebujete
+## Cíle projektu
 
-- Python 3.14 a Node.js 24 — verze použité při vývoji.
-- Nainstalovanou a spuštěnou [Ollamu](https://ollama.com/download).
-- Alespoň jeden model stažený v Ollamě.
+- Porovnat, jak se liší odpovědi na stejnou otázku:
+  - mezi osobnostmi se stejným modelem,
+  - mezi modely se stejnou osobností.
+- Umožnit snadné přidávání vlastních osobností a lokálních modelů bez úprav kódu.
+- Nabídnout anonymní režim, který skryje jména osobností a omezí tak předpojatost při čtení odpovědí.
+- Podložit odpovědi osobností vlastními dokumenty pomocí RAG (připravuje se).
 
-## Instalace
+## Použití projektu
 
-Naklonujte repozitář a otevřete jeho kořenovou složku. Následující příkazy jsou pro Windows PowerShell.
+Všechny příkazy se spouštějí z kořene repozitáře s aktivovaným virtuálním prostředím (viz **Instalace**). Backend a frontend běží ve dvou oddělených terminálech, které nechte během používání otevřené.
 
-```powershell
-python -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -r requirements.txt
-npm --prefix client ci
-```
+- Nejdřív spusťte Ollamu a stáhněte alespoň jeden model:
+  ```bash
+  # Ollama běží na http://localhost:11434, ve Windows obvykle na pozadí
+  # pokud neběží, spusťte ji v samostatném terminálu:
+  ollama serve
+  ollama pull qwen3.5:9b
+  ```
+- V prvním terminálu spusťte backend:
+  ```bash
+  # spouštějte z kořene projektu, ne ze složky api/
+  python -m uvicorn api.main:app --reload
+  ```
+- Ve druhém terminálu spusťte frontend:
+  ```bash
+  # Python prostředí zde aktivovat není potřeba
+  cd client
+  npm run dev
+  ```
+- Otevřete [localhost:5173](http://localhost:5173), případně adresu vypsanou Vite. Frontend přesměrovává požadavky **/api** na backend na portu 8000.
+- Pomocí **+** vyberte osobnosti a modely, štítky odeberete tlačítkem **×**. Napište otázku a klikněte na **Odeslat**.
+- Každá buňka matice zobrazuje stav **Čeká**, **Generuje**, **Hotovo**, **Chyba**, **Přeskočeno** nebo **Zastaveno**. Text odpovědi se vypisuje průběžně.
+- Kombinace se zpracovávají postupně. **Přeskočit** přeruší aktuální buňku a pokračuje další, **Zastavit** ukončí celé porovnání. Už získaný text zůstane zobrazený.
+- **Anonymní režim** skryje jména a popisy osobností v matici, výběrové štítky zůstávají viditelné.
+- Aplikaci ukončíte pomocí `Ctrl+C` v obou terminálech a virtuální prostředí příkazem `deactivate`.
 
-## Spuštění
-
-Ollama musí běžet na výchozí adrese `http://localhost:11434`. Ve Windows se obvykle spouští na pozadí; případně ji spusťte příkazem `ollama serve`.
-
-V kořeni projektu spusťte backend:
-
-```powershell
-.\.venv\Scripts\python.exe -m uvicorn api.main:app --reload
-```
-
-Ve druhém terminálu, také z kořene projektu, spusťte frontend:
-
-```powershell
-npm --prefix client run dev
-```
-
-Otevřete [localhost:5173](http://localhost:5173), případně adresu vypsanou Vite. Backend běží na portu `8000` a frontend na něj přesměrovává požadavky `/api`.
-
-## Použití
-
-1. Pomocí **+** vyberte osobnosti a modely. Štítky odeberete tlačítkem **×**.
-2. Napište otázku a klikněte na **Odeslat**.
-3. V každé buňce uvidíte stav **Čeká**, **Generuje**, **Hotovo** nebo **Chyba**. Text odpovědi se zobrazuje průběžně.
-
-Kombinace se zpracovávají postupně. **Přeskočit** přeruší aktuální buňku a pokračuje další. **Zastavit** ukončí celé porovnání a zachová už získaný text.
-
-**Anonymní režim** skryje jména a popisy osobností v matici. Výběrové štítky zůstávají viditelné.
+Pokud aplikace hlásí nedostupnou Ollamu, ověřte, že běží a má stažený model. Rychlost a kvalita odpovědí závisí na vybraném modelu a hardwaru.
 
 ## Přidání osobnosti
 
-Klikněte na **+** u osobností a zvolte **Vytvořit novou osobnost**. Vyplňte název, popis a system prompt, který určuje chování osobnosti.
-
-Po uložení se osobnost rovnou vybere. Její konfigurace se uloží do složky `personas/` a zůstane dostupná i po obnovení stránky. Existující konfigurace se nepřepisují.
-
-Osobnost lze přidat také ručně, například souborem `personas/badatel.json`:
-
-```json
-{
-  "id": "badatel",
-  "name": "Zvídavý badatel",
-  "description": "Hledá důkazy a souvislosti",
-  "system_prompt": "Odpovídej česky a stručně. Posuzuj otázky pomocí důkazů a jasně přiznávej nejistotu."
-}
-```
-
-Název souboru musí odpovídat `id`. Používejte malá písmena bez diakritiky, číslice a pomlčky. Po ručním přidání obnovte stránku; restart backendu není potřeba.
+- V aplikaci klikněte na **+** u osobností a zvolte **Vytvořit novou osobnost**. Vyplňte název, popis a system prompt, který určuje chování osobnosti. Konfigurace se uloží do složky **personas/** a existující soubory se nikdy nepřepisují.
+- Osobnost lze přidat také ručně, například souborem **personas/badatel.json**:
+  ```json
+  {
+    "id": "badatel",
+    "name": "Zvídavý badatel",
+    "description": "Hledá důkazy a souvislosti",
+    "system_prompt": "Odpovídej česky a stručně. Posuzuj otázky pomocí důkazů a jasně přiznávej nejistotu."
+  }
+  ```
+- Název souboru musí odpovídat `id`. Používejte malá písmena bez diakritiky, číslice a pomlčky. Po ručním přidání stačí obnovit stránku, restart backendu není potřeba.
 
 ## Přidání modelu
 
-Modely se stahují přes Ollamu, například:
-
-```powershell
-ollama pull ministral-3:8b
-ollama pull qwen3.5:9b
-```
-
-Další názvy najdete v [knihovně modelů Ollamy](https://ollama.com/library). Po stažení obnovte stránku a model vyberte přes **+** u modelů. Stahování modelů přímo v aplikaci není implementované.
+- Modely se stahují přes Ollamu, další názvy najdete v [knihovně modelů Ollamy](https://ollama.com/library):
+  ```bash
+  ollama pull ministral-3:8b
+  ollama pull qwen3.5:9b
+  ```
+- Po stažení obnovte stránku a model vyberte přes **+** u modelů. Stahování modelů přímo v aplikaci není implementované.
 
 ## Struktura projektu
 
-```text
-api/              Backend a komunikace s Ollamou
-client/           Webové rozhraní
-personas/         JSON konfigurace osobností
-requirements.txt  Python závislosti
+- **api/** – backend FastAPI, správa osobností a komunikace s Ollamou
+- **client/** – webové rozhraní v Reactu
+- **personas/** – JSON konfigurace osobností
+- **requirements.txt** – Python závislosti
+
+## Použité technologie
+
+- Python 3.14
+- Node.js 24
+- React 19.3 + TypeScript 6.0 – webové rozhraní
+- Vite 8.3 – vývojový server a build frontendu
+- ESLint 10 – kontrola kódu frontendu
+- FastAPI 0.162 + Uvicorn 0.54 – backend a streamování odpovědí
+- Pydantic 2.14 – validace požadavků a konfigurací osobností
+- Ollama 0.6 – lokální běh a volání jazykových modelů
+- LangChain Core 1.7 + LangChain Ollama 1.1 – základ pro práci s dokumenty a embeddings
+
+## Instalace
+
+Je potřeba mít nainstalovaný Git, Python 3.14, Node.js 24 a [Ollamu](https://ollama.com/download). Pro Python závislosti doporučuji použít virtuální prostředí **.venv**, aby byly oddělené od ostatních projektů a systémové instalace Pythonu.
+
+```bash
+# naklonování repozitáře
+git clone https://github.com/Marek-Szczepanik/PersonaLab.git
+cd PersonaLab
+
+# vytvoření a aktivace virtuálního prostředí
+# Windows (PowerShell):
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+# Linux/macOS:
+python3 -m venv .venv
+source .venv/bin/activate
+
+# instalace Python závislostí
+python -m pip install -r requirements.txt
+
+# instalace frontendových závislostí do client/node_modules
+cd client
+npm ci
+cd ..
 ```
 
-Pokud aplikace hlásí nedostupnou Ollamu, ověřte, že běží a má stažený model. Rychlost a kvalita odpovědí závisí na vybraném modelu a hardwaru.
+Prostředí se vytváří jen při první instalaci, při dalších spuštěních stačí aktivovat existující **.venv**. Aktivace platí pouze pro aktuální terminál, po aktivaci se na začátku řádku obvykle zobrazí `(.venv)`. Složka **.venv** se do Gitu neukládá.
+
+Pokud PowerShell odmítne spustit **Activate.ps1** kvůli zásadám spouštění skriptů, povolte skripty jen pro aktuální terminál a aktivaci zopakujte:
+
+```bash
+# Windows (PowerShell):
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned
+.\.venv\Scripts\Activate.ps1
+```

@@ -3,7 +3,7 @@
 import asyncio
 import json
 import logging
-from collections.abc import AsyncIterator, Awaitable
+from collections.abc import AsyncGenerator, AsyncIterator, Awaitable
 from typing import TypeVar
 
 import httpx
@@ -130,7 +130,7 @@ async def generate_comparison(data: ComparisonRequest, personas: dict[str, Perso
                     logger.exception("Generování selhalo pro personu %s a model %s.", persona_id, model)
                     yield encode_event(persona_id, model, "error", error="Odpověď se nepodařilo vygenerovat.")
                 finally:
-                    if stream is not None:
+                    if isinstance(stream, AsyncGenerator):
                         with CancelScope(shield=True):
                             await stream.aclose()
                         stream = None
