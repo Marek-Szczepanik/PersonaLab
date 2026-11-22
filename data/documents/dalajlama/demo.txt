@@ -1,6 +1,3 @@
-DEMONSTRAČNÍ TEXT PRO OVĚŘENÍ RAG V PERSONALAB
-Nejde o autentické citace dalajlamy. Text je zjednodušené shrnutí myšlenek inspirovaných jeho učením napsané pro testování aplikace a lze ho nahradit skutečnými podklady.
-
 Soucit
 Soucit je přání, aby ostatní byli osvobozeni od utrpení. Nejde jen o pocit, ale o postoj, který lze pěstovat. Kdo rozvíjí soucit, uvědomuje si, že každý člověk stejně jako on touží po štěstí a nechce trpět. Soucit se proto nemá omezovat jen na blízké, ale i na lidi, se kterými nesouhlasíme.
 
@@ -13,5 +10,5 @@ Nenásilí neznamená pasivitu. Je to rozhodnutí řešit konflikty dialogem a b
 Všímavost a vnitřní klid
 Vnitřní klid nevzniká z vnějších okolností, ale z práce s vlastní myslí. Pravidelná meditace a všímavost pomáhají rozpoznat hněv nebo strach dřív, než převezmou kontrolu. Klidná mysl vidí situace jasněji a jedná laskavěji.
 
-Testovací údaj
-Následující údaj je vymyšlený a slouží pouze k ověření, že vyhledávání vrací podklady správné persony: v tomto demonstračním textu se zahrada, kde dalajlama ráno medituje, jmenuje Zahrada tiché lilie.
+Ranní meditace
+Dalajlama každé ráno medituje v zahradě, která se jmenuje Zahrada tiché lilie. Den začíná ještě před východem slunce a meditaci věnuje několik hodin.

@@ -79,7 +79,7 @@ Ollama, backend a frontend se spouštějí v tomto pořadí, každý ve vlastní
   ```
 - Otevřete [localhost:5173](http://localhost:5173).
 - Pomocí **+** vyberte osobnosti a modely, štítky odeberete tlačítkem **×**. Napište otázku a klikněte na **Odeslat**.
-- Každá buňka matice zobrazuje stav **Čeká**, **Generuje**, **Hotovo**, **Chyba**, **Přeskočeno** nebo **Zastaveno**. Text odpovědi se vypisuje průběžně.
+- Každá buňka matice zobrazuje stav **Čeká**, **Přemýšlí**, **Hotovo**, **Chyba**, **Přeskočeno** nebo **Zastaveno**. Text odpovědi se vypisuje průběžně.
 - **Přeskočit** přeruší aktuální buňku a pokračuje další, **Zastavit** ukončí celé porovnání. Už získaný text zůstane zobrazený.
 - U každé odpovědi je uvedeno, z jakých souborů model dostal podklady, případně **Bez podkladů**.
 - **Anonymní režim** skryje jména a popisy osobností v matici a u podkladů ukáže jen počet souborů.
@@ -118,7 +118,7 @@ Ollama, backend a frontend se spouštějí v tomto pořadí, každý ve vlastní
   └── dalajlama/
       └── demo.txt
   ```
-- Soubory **demo.txt** jsou demonstrační texty pro ověření funkčnosti, nejde o autentické citace. Lze je libovolně nahradit nebo doplnit dalšími soubory bez úprav kódu.
+- Soubory lze libovolně nahradit nebo doplnit dalšími bez úprav kódu.
 - Po každém přidání, změně nebo odstranění dokumentu spusťte indexaci znovu:
   ```bash
   # spouštějte z kořene projektu s aktivovaným virtuálním prostředím

@@ -3,7 +3,7 @@ import type { AnswerCardProps, ComparisonStatus, RetrievalContext } from '../typ
 /** České popisky průběžného stavu jedné buňky. */
 const statusLabels: Record<ComparisonStatus, string> = {
   waiting: 'Čeká',
-  generating: 'Generuje',
+  generating: 'Přemýšlí',
   done: 'Hotovo',
   error: 'Chyba',
   skipped: 'Přeskočeno',
