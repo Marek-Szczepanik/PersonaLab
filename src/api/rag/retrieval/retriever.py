@@ -10,7 +10,7 @@ from langchain_core.documents import Document
 from api.rag.index import INDEX_PATH, TOP_K, load_index, persona_source_files, read_source
 from api.rag.rag_error import RagError
 from api.rag.rag_index import RagIndex
-from api.rag.retrieval_result import RetrievalResult
+from api.rag.retrieval.retrieval_result import RetrievalResult
 
 REINDEX_HINT = "Spusťte indexaci příkazem python -m api.rag."
 CACHE_SIZE = 64

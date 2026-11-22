@@ -2,6 +2,6 @@
 
 import sys
 
-from api.rag.indexer import main
+from api.rag.indexing.indexer import main
 
 sys.exit(main())

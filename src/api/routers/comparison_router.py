@@ -12,9 +12,9 @@ from anyio import CancelScope
 from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import StreamingResponse
 
-from api.rag.prompt import build_messages
 from api.rag.rag_error import RagError
-from api.rag.retriever import retrieve
+from api.rag.retrieval.prompt import build_messages
+from api.rag.retrieval.retriever import retrieve
 from api.repositories.persona_repository import load_personas
 from api.schemas.comparison_request import ComparisonRequest
 from api.schemas.persona import Persona

@@ -1,6 +1,6 @@
 """Sestavení zpráv pro model s podklady oddělenými od instrukcí aplikace."""
 
-from api.rag.retrieval_result import RetrievalResult
+from api.rag.retrieval.retrieval_result import RetrievalResult
 
 RAG_RULES = """Pravidla aplikace pro práci s podklady:
 - Zpráva uživatele obsahuje blok <podklady> s úryvky dokumentů k této osobnosti a za ním otázku.
