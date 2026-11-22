@@ -30,7 +30,7 @@ python -m venv .venv
 python3 -m venv .venv
 source .venv/bin/activate
 
-# instalace Python závislostí
+# instalace Python závislostí včetně samotného projektu
 python -m pip install -r requirements.txt
 
 # instalace frontendových závislostí
@@ -43,9 +43,7 @@ ollama pull qwen3.5:9b
 
 # stažení embedding modelu a vytvoření indexu podkladů
 ollama pull bge-m3
-cd src
 python -m api.rag
-cd ..
 ```
 
 Pokud PowerShell odmítne spustit **Activate.ps1** kvůli zásadám spouštění skriptů, povolte skripty jen pro aktuální terminál a aktivaci zopakujte:
@@ -72,7 +70,7 @@ Ollama, backend a frontend se spouštějí v tomto pořadí, každý ve vlastní
   # Linux/macOS:
   source .venv/bin/activate
 
-  python -m uvicorn api.main:app --reload --app-dir src
+  python -m uvicorn api.main:app --reload
   ```
 - Spusťte frontend:
   ```bash
@@ -122,10 +120,8 @@ Ollama, backend a frontend se spouštějí v tomto pořadí, každý ve vlastní
 - Soubory **demo.txt** jsou demonstrační texty pro ověření funkčnosti, nejde o autentické citace. Lze je libovolně nahradit nebo doplnit dalšími soubory bez úprav kódu.
 - Po každém přidání, změně nebo odstranění dokumentu spusťte indexaci znovu:
   ```bash
-  # spouštějte s aktivovaným virtuálním prostředím, indexace běží ze složky src
-  cd src
+  # spouštějte z kořene projektu s aktivovaným virtuálním prostředím
   python -m api.rag
-  cd ..
   ```
 - Indexace rozdělí dokumenty na úryvky, vytvoří jejich embeddings v Ollamě a uloží je do **data/rag_index/index.json**. Index se pokaždé sestaví celý znovu, takže neobsahuje duplicity ani smazané dokumenty. Složka **data/rag_index/** se do Gitu neukládá a lze ji kdykoli smazat a indexací vytvořit znovu.
 - Výchozí embedding model je **bge-m3**. Jiný model nastavíte proměnnou prostředí před indexací:
@@ -136,9 +132,7 @@ Ollama, backend a frontend se spouštějí v tomto pořadí, každý ve vlastní
   export PERSONALAB_EMBED_MODEL=jiny-model
 
   ollama pull jiny-model
-  cd src
   python -m api.rag
-  cd ..
   ```
 - Název použitého modelu se ukládá do indexu, aby vyhledávání vždy používalo stejný model jako indexace.
 
@@ -151,6 +145,7 @@ Ollama, backend a frontend se spouštějí v tomto pořadí, každý ve vlastní
 - **data/rag_index/** – vygenerovaný index podkladů, vzniká po indexaci
 - **docs/** – dokumentace projektu
 - **requirements.txt** – Python závislosti
+- **pyproject.toml** – registrace složky src, aby šly příkazy spouštět z kořene projektu
 
 ## Použité technologie
 

@@ -1,4 +1,4 @@
-"""Sestavení indexu podkladů person; spouští se ze složky src příkazem python -m api.rag."""
+"""Sestavení indexu podkladů person; spouští se z kořene projektu příkazem python -m api.rag."""
 
 import sys
 

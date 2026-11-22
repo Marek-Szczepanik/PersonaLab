@@ -1,0 +1,13 @@
+# Registruje složku src do virtuálního prostředí, aby šly příkazy spouštět z kořene projektu.
+[build-system]
+requires = ["setuptools>=80"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "personalab"
+version = "0.1.0"
+requires-python = ">=3.14"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["api*"]

@@ -14,3 +14,6 @@ dist/
 
 # RAG index
 rag_index/
+
+# Python balíček projektu
+*.egg-info/
