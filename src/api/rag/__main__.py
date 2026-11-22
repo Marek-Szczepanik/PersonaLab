@@ -71,7 +71,8 @@ def main() -> int:
         store = InMemoryVectorStore(embedding=create_embeddings(model))
         for start in range(0, len(chunks), BATCH_SIZE):
             batch = chunks[start:start + BATCH_SIZE]
-            store.add_documents(batch, ids=[chunk.id for chunk in batch])
+            # Úložiště převezme ID z Document.id, takže úryvky mají stabilní identifikátory.
+            store.add_documents(batch)
         save_index(model, sources, store)
     except RagError as error:
         print(f"Chyba: {error}", file=sys.stderr)
