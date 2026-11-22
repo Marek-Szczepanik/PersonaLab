@@ -34,7 +34,7 @@ export default function ComparisonMatrix({ personas, models, anonymous, results,
               </th>
               {models.map(model => (
                 <td key={model}>
-                  <AnswerCard result={results[persona.id]?.[model]} onSkip={() => onSkip(persona.id, model)} />
+                  <AnswerCard result={results[persona.id]?.[model]} anonymous={anonymous} onSkip={() => onSkip(persona.id, model)} />
                 </td>
               ))}
             </tr>

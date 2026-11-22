@@ -11,7 +11,7 @@ Jedná se o týmový školní projekt. Osobnosti jsou uložené v JSON souborech
   - mezi modely se stejnou osobností.
 - Umožnit snadné přidávání vlastních osobností a lokálních modelů bez úprav kódu.
 - Nabídnout anonymní režim, který skryje jména osobností a omezí tak předpojatost při čtení odpovědí.
-- Podložit odpovědi osobností vlastními dokumenty pomocí RAG (připravuje se).
+- Podložit odpovědi osobností vlastními dokumenty pomocí RAG.
 
 ## Instalace
 
@@ -81,7 +81,8 @@ Ollama, backend a frontend se spouštějí v tomto pořadí, každý ve vlastní
 - Pomocí **+** vyberte osobnosti a modely, štítky odeberete tlačítkem **×**. Napište otázku a klikněte na **Odeslat**.
 - Každá buňka matice zobrazuje stav **Čeká**, **Generuje**, **Hotovo**, **Chyba**, **Přeskočeno** nebo **Zastaveno**. Text odpovědi se vypisuje průběžně.
 - **Přeskočit** přeruší aktuální buňku a pokračuje další, **Zastavit** ukončí celé porovnání. Už získaný text zůstane zobrazený.
-- **Anonymní režim** skryje jména a popisy osobností v matici.
+- U každé odpovědi je uvedeno, z jakých souborů model dostal podklady, případně **Bez podkladů**.
+- **Anonymní režim** skryje jména a popisy osobností v matici a u podkladů ukáže jen počet souborů.
 - Aplikaci ukončíte pomocí `Ctrl+C` v terminálech backendu a frontendu.
 
 ## Přidání osobnosti
@@ -135,6 +136,8 @@ Ollama, backend a frontend se spouštějí v tomto pořadí, každý ve vlastní
   python -m api.rag
   ```
 - Název použitého modelu se ukládá do indexu, aby vyhledávání vždy používalo stejný model jako indexace.
+- Před každou odpovědí se v indexu vyhledají nejrelevantnější úryvky dané osobnosti a předají se modelu spolu s otázkou. Všechny modely v jednom řádku matice dostanou stejné podklady.
+- Osobnost bez dokumentů funguje jako dřív. Pokud dokumenty existují, ale index chybí nebo nejde použít, zobrazí se u odpovědi chyba s návodem. Pokud se dokumenty od poslední indexace změnily, zobrazí se upozornění.
 
 ## Struktura projektu
 

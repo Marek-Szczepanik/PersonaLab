@@ -1,4 +1,4 @@
-"""Generování odpovědí pro jednotlivé kombinace person a modelů."""
+"""Generování odpovědí pro jednotlivé kombinace person a modelů s podklady persony."""
 
 import asyncio
 import json
@@ -12,6 +12,9 @@ from anyio import CancelScope
 from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import StreamingResponse
 
+from api.rag.prompt import build_messages
+from api.rag.rag_error import RagError
+from api.rag.retriever import retrieve
 from api.repositories.persona_repository import load_personas
 from api.schemas.comparison_request import ComparisonRequest
 from api.schemas.persona import Persona
@@ -21,7 +24,7 @@ logger = logging.getLogger(__name__)
 OperationResult = TypeVar("OperationResult")
 
 
-def encode_event(persona_id: str, model: str, status: str, **details: str) -> str:
+def encode_event(persona_id: str, model: str, status: str, **details: object) -> str:
     """Zakóduje jednu stavovou událost jako samostatný řádek JSON."""
     return json.dumps({"persona_id": persona_id, "model": model, "status": status, **details}, ensure_ascii=False) + "\n"
 
@@ -65,15 +68,17 @@ async def generate_comparison(data: ComparisonRequest, personas: dict[str, Perso
                 completed_response = False
                 done_reason = None
                 try:
+                    # Podklady se hledají před generováním; i tuto fázi lze přeskočit nebo zastavit.
+                    retrieval = await await_connected(retrieve(persona_id, data.question), disconnected)
+                    if retrieval is None:
+                        return
+                    yield encode_event(persona_id, model, "generating", context=retrieval.metadata())
                     info = await await_connected(client.show(model), disconnected)
                     if info is None:
                         return
                     stream = await await_connected(client.chat(
                         model=model,
-                        messages=[
-                            {"role": "system", "content": personas[persona_id].system_prompt},
-                            {"role": "user", "content": data.question},
-                        ],
+                        messages=build_messages(personas[persona_id].system_prompt, data.question, retrieval),
                         think=False if "thinking" in (info.capabilities or []) else None,
                         stream=True,
                     ), disconnected)
@@ -103,6 +108,8 @@ async def generate_comparison(data: ComparisonRequest, personas: dict[str, Perso
                         yield encode_event(persona_id, model, "error", error="Model vygeneroval pouze interní přemýšlení bez výsledné odpovědi.")
                     else:
                         yield encode_event(persona_id, model, "error", error="Model vrátil prázdnou odpověď.")
+                except RagError as error:
+                    yield encode_event(persona_id, model, "error", error=f"Podklady nelze připravit: {error}")
                 except (ConnectionError, httpx.ConnectError):
                     yield encode_event(persona_id, model, "error", error="Ollama není dostupná.")
                 except httpx.TimeoutException:

@@ -12,6 +12,13 @@ export interface ComparisonRun {
   stopped: boolean
 }
 
+/** Podklady předané modelu podle backendového vyhledávání; nepochází z textu modelu. */
+export interface RetrievalContext {
+  mode: 'documents' | 'none'
+  sources: string[]
+  warning?: string
+}
+
 /** Stavová událost nebo výsledek jedné buňky z backendu. */
 export interface ComparisonEvent {
   persona_id: string
@@ -19,6 +26,7 @@ export interface ComparisonEvent {
   status: ComparisonStatus
   text?: string
   error?: string
+  context?: RetrievalContext
 }
 
 /** Výsledky indexované podle ID persony a názvu modelu. */
@@ -43,5 +51,6 @@ export interface ComparisonMatrixProps {
 /** Stav jediné karty; před odesláním otázky není výsledek přítomen. */
 export interface AnswerCardProps {
   result?: ComparisonEvent
+  anonymous: boolean
   onSkip: () => void
 }

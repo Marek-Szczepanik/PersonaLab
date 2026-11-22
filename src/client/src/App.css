@@ -62,6 +62,8 @@
 .status-error { color: #a34757; }
 .answer-card .answer-text { white-space: pre-wrap; overflow-wrap: anywhere; color: #51465f; font-size: 13px; max-height: 420px; overflow-y: auto; }
 .answer-card .answer-error { color: #a34757; font-size: 12px; overflow-wrap: anywhere; }
+.answer-card .answer-sources { color: #7c6a91; font-size: 11px; margin-top: 4px; overflow-wrap: anywhere; }
+.answer-card .answer-warning { color: #9a6a1c; font-size: 11px; margin-top: 2px; overflow-wrap: anywhere; }
 .matrix-empty { min-height: 180px; margin: 0 28px 16px; border: 1px dashed #e1d8eb; background: #fcfaff; border-radius: 11px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 24px; }
 .matrix-empty p { color: #867392; font-size: 12px; line-height: 1.8; margin-top: 9px; }
 .question-form { padding: 23px 28px 21px; border-top: 1px solid var(--border); margin-top: 6px; }

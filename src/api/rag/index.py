@@ -19,6 +19,7 @@ INDEX_FORMAT = 1
 DEFAULT_EMBED_MODEL = "bge-m3"
 CHUNK_SIZE = 800
 CHUNK_OVERLAP = 100
+TOP_K = 4
 
 
 def embed_model_name() -> str:

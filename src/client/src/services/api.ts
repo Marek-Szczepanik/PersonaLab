@@ -1,7 +1,7 @@
 import type { ModelsResponse } from '../types/ModelTypes'
 import type { HealthResponse } from '../types/ApiTypes'
 import type { Persona, PersonaCreate } from '../types/PersonaTypes'
-import type { ComparisonEvent, ComparisonRequest } from '../types/ComparisonTypes'
+import type { ComparisonEvent, ComparisonRequest, RetrievalContext } from '../types/ComparisonTypes'
 
 /** Provede požadavek a převede chyby backendu na srozumitelnou zprávu. */
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
@@ -32,6 +32,15 @@ async function checkResponse(response: Response): Promise<void> {
   }
 }
 
+/** Ověří tvar údajů o podkladech, které posílá backend. */
+function isRetrievalContext(value: unknown): value is RetrievalContext {
+  const context = value as RetrievalContext
+  return typeof context === 'object' && context !== null
+    && (context.mode === 'documents' || context.mode === 'none')
+    && Array.isArray(context.sources) && context.sources.every(source => typeof source === 'string')
+    && (context.warning === undefined || typeof context.warning === 'string')
+}
+
 /** Ověří jeden řádek stavového proudu před předáním do Reactu. */
 function parseComparisonEvent(line: string): ComparisonEvent {
   const event = JSON.parse(line) as ComparisonEvent
@@ -39,7 +48,8 @@ function parseComparisonEvent(line: string): ComparisonEvent {
     || !['waiting', 'generating', 'done', 'error'].includes(event.status)
     || (event.text !== undefined && typeof event.text !== 'string')
     || (event.status === 'done' && typeof event.text !== 'string')
-    || (event.status === 'error' && typeof event.error !== 'string')) {
+    || (event.status === 'error' && typeof event.error !== 'string')
+    || (event.context !== undefined && !isRetrievalContext(event.context))) {
     throw new Error('Backend vrátil neplatný stav generování.')
   }
   return event
