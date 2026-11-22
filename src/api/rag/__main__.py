@@ -1,4 +1,4 @@
-"""Sestavení indexu podkladů person; spouští se z kořene projektu příkazem python -m api.rag."""
+"""Sestavení indexu podkladů person; spouští se ze složky src příkazem python -m api.rag."""
 
 import sys
 
@@ -37,13 +37,13 @@ def collect_chunks() -> tuple[list[str], dict[str, dict[str, dict]], list[Docume
     if DOCUMENTS_DIR.is_dir():
         for folder in sorted(DOCUMENTS_DIR.iterdir()):
             if folder.is_dir() and folder.name not in persona_ids:
-                print(f"Varování: složka documents/{folder.name} neodpovídá žádné personě, přeskakuji ji.")
+                print(f"Varování: složka data/documents/{folder.name} neodpovídá žádné personě, přeskakuji ji.")
 
     sources: dict[str, dict[str, dict]] = {}
     chunks: list[Document] = []
     for persona_id in persona_ids:
         for path in persona_source_files(persona_id):
-            label = f"documents/{persona_id}/{path.name}"
+            label = f"data/documents/{persona_id}/{path.name}"
             try:
                 text, digest = read_source(path)
             except UnicodeDecodeError as error:
@@ -86,7 +86,7 @@ def main() -> int:
             print(f"Chyba Ollamy: {error.error}", file=sys.stderr)
         return 1
     except OSError:
-        print(f"Chyba: Index se nepodařilo uložit do {INDEX_PATH.parent.name}/. Zkontrolujte oprávnění složky.", file=sys.stderr)
+        print(f"Chyba: Index se nepodařilo uložit do {INDEX_PATH.parent.relative_to(PROJECT_DIR).as_posix()}/. Zkontrolujte oprávnění složky.", file=sys.stderr)
         return 1
 
     print(f"Index uložen do {INDEX_PATH.relative_to(PROJECT_DIR).as_posix()}. Předchozí obsah indexu byl nahrazen.")

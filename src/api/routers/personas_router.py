@@ -32,4 +32,4 @@ def create_persona(data: PersonaCreate) -> Persona:
         raise HTTPException(422, str(error)) from error
     except OSError as error:
         logger.exception("Personu se nepodařilo uložit.")
-        raise HTTPException(500, "Personu se nepodařilo uložit. Zkontrolujte oprávnění složky personas.") from error
+        raise HTTPException(500, "Personu se nepodařilo uložit. Zkontrolujte oprávnění složky data/personas.") from error

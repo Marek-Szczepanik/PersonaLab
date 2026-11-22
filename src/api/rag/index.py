@@ -12,9 +12,9 @@ from langchain_ollama import OllamaEmbeddings
 from api.rag.rag_error import RagError
 from api.rag.rag_index import RagIndex
 
-PROJECT_DIR = Path(__file__).resolve().parents[2]
-DOCUMENTS_DIR = PROJECT_DIR / "documents"
-INDEX_PATH = PROJECT_DIR / "rag_index" / "index.json"
+PROJECT_DIR = Path(__file__).resolve().parents[3]
+DOCUMENTS_DIR = PROJECT_DIR / "data" / "documents"
+INDEX_PATH = PROJECT_DIR / "data" / "rag_index" / "index.json"
 INDEX_FORMAT = 1
 DEFAULT_EMBED_MODEL = "bge-m3"
 CHUNK_SIZE = 800
@@ -32,7 +32,7 @@ def create_embeddings(model: str) -> OllamaEmbeddings:
 
 
 def persona_source_files(persona_id: str) -> list[Path]:
-    """Vrátí soubory .txt přímo ve složce persony; symlinky a cesty mimo documents/ přeskočí."""
+    """Vrátí soubory .txt přímo ve složce persony; symlinky a cesty mimo data/documents/ přeskočí."""
     folder = DOCUMENTS_DIR / persona_id
     if folder.is_symlink() or not folder.is_dir() or folder.resolve().parent != DOCUMENTS_DIR.resolve():
         return []

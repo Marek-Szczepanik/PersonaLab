@@ -34,16 +34,18 @@ source .venv/bin/activate
 python -m pip install -r requirements.txt
 
 # instalace frontendových závislostí
-cd client
+cd src/client
 npm ci
-cd ..
+cd ../..
 
 # stažení alespoň jednoho modelu do Ollamy
 ollama pull qwen3.5:9b
 
 # stažení embedding modelu a vytvoření indexu podkladů
 ollama pull bge-m3
+cd src
 python -m api.rag
+cd ..
 ```
 
 Pokud PowerShell odmítne spustit **Activate.ps1** kvůli zásadám spouštění skriptů, povolte skripty jen pro aktuální terminál a aktivaci zopakujte:
@@ -70,11 +72,11 @@ Ollama, backend a frontend se spouštějí v tomto pořadí, každý ve vlastní
   # Linux/macOS:
   source .venv/bin/activate
 
-  python -m uvicorn api.main:app --reload
+  python -m uvicorn api.main:app --reload --app-dir src
   ```
 - Spusťte frontend:
   ```bash
-  cd client
+  cd src/client
   npm run dev
   ```
 - Otevřete [localhost:5173](http://localhost:5173).
@@ -86,8 +88,8 @@ Ollama, backend a frontend se spouštějí v tomto pořadí, každý ve vlastní
 
 ## Přidání osobnosti
 
-- V aplikaci klikněte na **+** u osobností a zvolte **Vytvořit novou osobnost**. Vyplňte název, popis a system prompt, který určuje chování osobnosti. Konfigurace se uloží do složky **personas/** a existující soubory se nikdy nepřepisují.
-- Osobnost lze přidat také ručně, například souborem **personas/badatel.json**:
+- V aplikaci klikněte na **+** u osobností a zvolte **Vytvořit novou osobnost**. Vyplňte název, popis a system prompt, který určuje chování osobnosti. Konfigurace se uloží do složky **data/personas/** a existující soubory se nikdy nepřepisují.
+- Osobnost lze přidat také ručně, například souborem **data/personas/badatel.json**:
   ```json
   {
     "id": "badatel",
@@ -111,7 +113,7 @@ Ollama, backend a frontend se spouštějí v tomto pořadí, každý ve vlastní
 
 - Podklady se ukládají jako textové soubory **.txt** v kódování UTF-8 do složky pojmenované podle `id` osobnosti:
   ```text
-  documents/
+  data/documents/
   ├── kant/
   │   └── demo.txt
   └── dalajlama/
@@ -120,10 +122,12 @@ Ollama, backend a frontend se spouštějí v tomto pořadí, každý ve vlastní
 - Soubory **demo.txt** jsou demonstrační texty pro ověření funkčnosti, nejde o autentické citace. Lze je libovolně nahradit nebo doplnit dalšími soubory bez úprav kódu.
 - Po každém přidání, změně nebo odstranění dokumentu spusťte indexaci znovu:
   ```bash
-  # spouštějte z kořene projektu s aktivovaným virtuálním prostředím
+  # spouštějte s aktivovaným virtuálním prostředím, indexace běží ze složky src
+  cd src
   python -m api.rag
+  cd ..
   ```
-- Indexace rozdělí dokumenty na úryvky, vytvoří jejich embeddings v Ollamě a uloží je do **rag_index/index.json**. Index se pokaždé sestaví celý znovu, takže neobsahuje duplicity ani smazané dokumenty. Složka **rag_index/** se do Gitu neukládá a lze ji kdykoli smazat a indexací vytvořit znovu.
+- Indexace rozdělí dokumenty na úryvky, vytvoří jejich embeddings v Ollamě a uloží je do **data/rag_index/index.json**. Index se pokaždé sestaví celý znovu, takže neobsahuje duplicity ani smazané dokumenty. Složka **data/rag_index/** se do Gitu neukládá a lze ji kdykoli smazat a indexací vytvořit znovu.
 - Výchozí embedding model je **bge-m3**. Jiný model nastavíte proměnnou prostředí před indexací:
   ```bash
   # Windows (PowerShell):
@@ -132,17 +136,20 @@ Ollama, backend a frontend se spouštějí v tomto pořadí, každý ve vlastní
   export PERSONALAB_EMBED_MODEL=jiny-model
 
   ollama pull jiny-model
+  cd src
   python -m api.rag
+  cd ..
   ```
 - Název použitého modelu se ukládá do indexu, aby vyhledávání vždy používalo stejný model jako indexace.
 
 ## Struktura projektu
 
-- **api/** – backend FastAPI: **routers/** endpointy, **schemas/** datové třídy, **repositories/** práce se soubory person, **rag/** indexace podkladů
-- **client/** – webové rozhraní v Reactu
-- **documents/** – textové podklady osobností
-- **personas/** – JSON konfigurace osobností
-- **rag_index/** – vygenerovaný index podkladů, vzniká po indexaci
+- **src/api/** – backend FastAPI: **routers/** endpointy, **schemas/** datové třídy, **repositories/** práce se soubory person, **rag/** indexace podkladů
+- **src/client/** – webové rozhraní v Reactu
+- **data/personas/** – JSON konfigurace osobností
+- **data/documents/** – textové podklady osobností
+- **data/rag_index/** – vygenerovaný index podkladů, vzniká po indexaci
+- **docs/** – dokumentace projektu
 - **requirements.txt** – Python závislosti
 
 ## Použité technologie
