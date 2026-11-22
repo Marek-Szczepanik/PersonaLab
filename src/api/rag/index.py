@@ -12,13 +12,21 @@ from langchain_ollama import OllamaEmbeddings
 from api.rag.rag_error import RagError
 from api.rag.rag_index import RagIndex
 
+# Kořen projektu.
 PROJECT_DIR = Path(__file__).resolve().parents[3]
+# Složka s podklady person.
 DOCUMENTS_DIR = PROJECT_DIR / "data" / "documents"
+# Soubor s indexem.
 INDEX_PATH = PROJECT_DIR / "data" / "rag_index" / "index.json"
+# Verze formátu indexu.
 INDEX_FORMAT = 1
+# Výchozí embedding model.
 DEFAULT_EMBED_MODEL = "bge-m3"
+# Délka úryvku ve znacích.
 CHUNK_SIZE = 800
+# Překryv sousedních úryvků ve znacích.
 CHUNK_OVERLAP = 100
+# Počet úryvků předaných modelu.
 TOP_K = 4
 
 

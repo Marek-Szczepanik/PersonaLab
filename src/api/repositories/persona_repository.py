@@ -11,6 +11,7 @@ from pydantic import ValidationError
 from api.schemas.persona import Persona
 from api.schemas.persona_create import PersonaCreate
 
+# Složka s konfiguracemi person.
 PERSONAS_DIR = Path(__file__).resolve().parents[3] / "data" / "personas"
 logger = logging.getLogger(__name__)
 

@@ -12,12 +12,14 @@ from api.rag.rag_error import RagError
 from api.rag.rag_index import RagIndex
 from api.rag.retrieval.retrieval_result import RetrievalResult
 
+# Návod k nové indexaci.
 REINDEX_HINT = "Spusťte indexaci příkazem python -m api.rag."
+# Počet zapamatovaných výsledků vyhledávání.
 CACHE_SIZE = 64
 
-# Načtený index s verzí podle času změny souboru; nová indexace se projeví bez restartu.
+# Načtený index.
 _index: tuple[int, RagIndex] | None = None
-# Výsledky vyhledávání, aby všechny modely v řádku dostaly stejné podklady bez opakovaných embeddings.
+# Zapamatované výsledky vyhledávání.
 _results: OrderedDict[tuple[int, str, str], list[Document]] = OrderedDict()
 
 

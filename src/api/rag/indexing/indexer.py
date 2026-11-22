@@ -23,6 +23,7 @@ from api.rag.index import (
 from api.rag.rag_error import RagError
 from api.repositories.persona_repository import load_personas
 
+# Počet úryvků v jedné dávce embeddings.
 BATCH_SIZE = 32
 
 
