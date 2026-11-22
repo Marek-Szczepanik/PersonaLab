@@ -21,7 +21,7 @@ def get_models():
     try:
         response = ollama.list()
         return {"models": [model.model for model in response.models]}
-    except ConnectError:
+    except (ConnectionError, ConnectError):
         raise HTTPException(
             status_code=503,
             detail="Ollama není dostupná."
